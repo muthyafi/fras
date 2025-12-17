@@ -129,8 +129,8 @@ export default function Dashboard() {
       <div className="bg-linear-to-r from-blue-500 to-purple-600 rounded-2xl p-8 text-white shadow-xl">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">PT Adira Finance - FRAS</h1>
-            <p className="text-blue-100">Fidusia Registration Automation System</p>
+            <h1 className="text-3xl font-bold mb-2">PT Adira Finance - DMaaS</h1>
+            <p className="text-blue-100">Document Management as a Service</p>
             <p className="text-blue-200 text-sm mt-1">Monitoring all branches - Real-time data across Indonesia</p>
           </div>
           <div className="text-right">

@@ -46,7 +46,7 @@ export default function Sidebar() {
               </div>
               <div>
                 <span className="font-bold text-lg block">PT Adira Finance</span>
-                <span className="text-xs text-gray-400">FRAS System</span>
+                <span className="text-xs text-gray-400">DMaaS System</span>
               </div>
             </div>
           </div>

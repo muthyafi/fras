@@ -44,10 +44,10 @@ export default function Login() {
               <LogIn className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900">
-              {isSignUp ? 'Create Account' : 'Welcome to FRAS'}
+              {isSignUp ? 'Create Account' : 'Welcome to DMaaS'}
             </h1>
             <p className="text-gray-600 mt-2">
-              {isSignUp ? 'Sign up to get started' : 'Fidusia Registration Automation System'}
+              {isSignUp ? 'Sign up to get started' : 'Document Management as a Service'}
             </p>
           </div>
 

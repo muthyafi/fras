@@ -1,33 +1,34 @@
-# FRAS - Fidusia Registration Automation System
+# DMaaS - Document Management as a Service
 
-**Fidusia Registration Automation System** - An intelligent platform for automating validation, registration, and tracking of Fidusia agreements with Indonesia's AHU (Administrasi Hukum Umum).
+**Document Management as a Service** - A comprehensive cloud-based document management platform designed for modern enterprises to organize, store, secure, and collaborate on documents efficiently.
 
 ## 📋 Product Scope
 
-The system will:
+The system provides:
 
-1. **Validate Agreement Data**
-   - Validate against the public Fidusia database at [https://ahu.go.id/pencarian/fidusia](https://ahu.go.id/pencarian/fidusia)
-   - Check for existing agreements before registration
-   - Verify debtor information (KTP, NPWP)
-   - Validate vehicle details (chassis number, engine number)
+1. **Document Storage & Organization**
+   - Centralized document repository
+   - Folder-based organization with metadata tagging
+   - Version control and document history
+   - Advanced search and filtering capabilities
 
-2. **Automate Fidusia Registration**
-   - Register via [https://fidusia.ahu.go.id](https://fidusia.ahu.go.id)
-   - Bulk upload with 57-field Indonesian AHU format
-   - Automatic PNBP payment tracking
-   - Real-time submission status monitoring
+2. **Document Processing & Automation**
+   - Automated document classification
+   - OCR and text extraction
+   - Workflow automation
+   - Bulk upload and processing
 
-3. **Manage and Track Registration Status**
-   - Real-time tracking of registration workflow
-   - PNBP payment status monitoring
-   - Certificate issuance tracking
-   - Batch submission management
+3. **Collaboration & Access Control**
+   - Role-based access control
+   - Document sharing and permissions
+   - Real-time collaboration features
+   - Activity tracking and audit logs
 
-4. **Store Certificates and Generate Reports**
-   - Secure certificate storage
-   - Automated report generation
-   - Export capabilities (CSV, Excel)
+4. **Security & Compliance**
+   - End-to-end encryption
+   - Compliance with industry standards
+   - Automated backup and disaster recovery
+   - Document retention policies
    - Audit trail and activity logs
 
 ## 🚀 Tech Stack

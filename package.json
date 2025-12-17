@@ -1,6 +1,6 @@
 {
-  "name": "fras",
-  "description": "Fidusia Registration Automation System - Automate validation, registration, and tracking of Fidusia agreements with AHU Indonesia",
+  "name": "dmaas",
+  "description": "Document Management as a Service - Comprehensive document management platform for enterprises",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -16,8 +16,8 @@
     "@types/papaparse": "^5.3.16",
     "lucide-react": "^0.548.0",
     "papaparse": "^5.5.3",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "react-router-dom": "^7.9.4",
     "tailwindcss": "^4.1.16"
   },
