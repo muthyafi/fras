@@ -1,14 +1,16 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Provider as UrqlProvider } from 'urql'
 import { useAuth } from './contexts/AuthContext'
+import { urqlClient } from './lib/urql'
 import Layout from './components/Layout'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Agreements from './pages/Agreements'
-import BulkUpload from './pages/BulkUpload'
+import BulkUpload from './pages/bulk-upload'
 import BranchManagement from './pages/BranchManagement'
-import UserManagement from './pages/UserManagement'
+import UserManagement from './pages/users'
 import RoleManagement from './pages/RoleManagement'
-import RegistrationTracking from './pages/RegistrationTracking'
+import RegistrationTracking from './pages/registration-tracking'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
@@ -35,12 +37,13 @@ function App() {
   const { user } = useAuth()
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/login"
-          element={user ? <Navigate to="/dashboard" replace /> : <Login />}
-        />
+    <UrqlProvider value={urqlClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/login"
+            element={user ? <Navigate to="/dashboard" replace /> : <Login />}
+          />
         <Route
           path="/dashboard"
           element={
@@ -140,6 +143,7 @@ function App() {
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
+    </UrqlProvider>
   )
 }
 

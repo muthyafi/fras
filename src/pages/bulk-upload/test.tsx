@@ -2,11 +2,11 @@ import { useState, useRef } from 'react'
 import type { ChangeEvent } from 'react'
 import { Upload, Download, AlertCircle, CheckCircle, X, Clock, FileCheck, Send } from 'lucide-react'
 import Papa from 'papaparse'
-import type { FidusiaCSVData, BulkUploadResult, ValidationResult } from '../types'
-import { supabase } from '../lib/supabase'
-import { checkExistingAgreement, submitToAHU, downloadVAList } from '../lib/api'
+import type { FidusiaCSVData, BulkUploadResult, ValidationResult } from '../../types'
+import { supabase } from '../../lib/supabase'
+import { checkExistingAgreement, submitToAHU, downloadVAList } from '../../lib/api'
 
-export default function BulkUpload() {
+export default function BUpload() {
   const [file, setFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [validating, setValidating] = useState(false)

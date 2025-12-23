@@ -16,9 +16,9 @@ import {
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-  { icon: FileText, label: 'Agreements', path: '/agreements' },
-  { icon: Activity, label: 'Registration Tracking', path: '/tracking' },
   { icon: Upload, label: 'Bulk Upload', path: '/bulk-upload' },
+  // { icon: FileText, label: 'Agreements', path: '/agreements' },
+  { icon: Activity, label: 'Registration Tracking', path: '/tracking' },
   { icon: Building2, label: 'Branch Management', path: '/branches' },
   { icon: Shield, label: 'User Management', path: '/users' },
   { icon: ShieldCheck, label: 'Role Management', path: '/roles' },
