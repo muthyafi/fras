@@ -1,11 +1,7 @@
 import { useState } from 'react'
 import {
   Users,
-  Search,
-  Filter,
   Plus,
-  Edit,
-  Trash2,
   Shield,
   Building2,
   Mail,
@@ -115,10 +111,6 @@ const availableBranches = [
 export default function UserManagement() {
   const { customRoles } = useRole()
   const [users, setUsers] = useState<UserWithPassword[]>(mockUsersData)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [roleFilter, setRoleFilter] = useState<string>('all')
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all')
-  const [showFilters, setShowFilters] = useState(false)
   const [selectedUser, setSelectedUser] = useState<UserWithPassword | null>(null)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
@@ -194,22 +186,6 @@ export default function UserManagement() {
     const role = allRoles.find((r) => r.id === roleId)
     return role || { name: roleId, color: 'gray' }
   }
-
-  // Filter users
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.branchName?.toLowerCase().includes(searchQuery.toLowerCase())
-
-    const matchesRole = roleFilter === 'all' || user.role === roleFilter
-    const matchesStatus =
-      statusFilter === 'all' ||
-      (statusFilter === 'active' && user.isActive) ||
-      (statusFilter === 'inactive' && !user.isActive)
-
-    return matchesSearch && matchesRole && matchesStatus
-  })
 
   // Calculate stats
   const totalUsers = users.length
