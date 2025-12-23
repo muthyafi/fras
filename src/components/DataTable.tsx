@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { Search, ChevronUp, ChevronDown, ChevronsUpDown, X, Filter } from 'lucide-react'
 
 // Hasura filter types
