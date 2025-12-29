@@ -50,7 +50,7 @@ export default function ReviewTab({
   const [notaryAssignments, setNotaryAssignments] = useState<NotaryAssignment[]>([])
   const [assigning, setAssigning] = useState(false)
 
-  const unassignedRecords = uploadedRecords.filter(r => !r.status.nama || r.status.nama !== "Assigned Notaris")
+  const unassignedRecords = uploadedRecords.filter(r => !r.status.nama || r.status.nama !== "Assigned")
   const totalAssigned = notaryAssignments.reduce((sum, na) => sum + na.quantity, 0)
 
   const addNotaryAssignment = () => {
@@ -319,7 +319,7 @@ export default function ReviewTab({
                     {record.tgl_awal_perjanjian}
                   </td>
                   <td className="px-4 py-3 text-sm whitespace-nowrap">
-                    {record.status.nama === "Assigned Notaris" ? (
+                    {record.status.nama === "Assigned" ? (
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         <CheckCircle className="w-3 h-3 mr-1" />
                         Assigned
@@ -327,7 +327,7 @@ export default function ReviewTab({
                     ) : (
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                         <Clock className="w-3 h-3 mr-1" />
-                        Pending
+                        Unassigned
                       </span>
                     )}
                   </td>

@@ -119,7 +119,7 @@ export default function PendingBatchesTab({
                       <div className="flex items-center gap-2 text-sm">
                         <Clock className="w-4 h-4 text-yellow-500" />
                         <span className="text-gray-600">
-                          Pending: {batch.unassigned_records}
+                          Unassigned: {batch.unassigned_records}
                         </span>
                       </div>
                     </div>

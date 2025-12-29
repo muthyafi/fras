@@ -78,10 +78,10 @@ export const SubscribeStatusChanges = `
 export const GetStatusCounts = `
   query GetStatusCounts {
     dmaas {
-      unassigned: pendaftaran_aggregate(where: { status: { nama: { _eq: "Active" } } }) {
+      unassigned: pendaftaran_aggregate(where: { status: { nama: { _eq: "Unassigned" } } }) {
         aggregate { count }
       }
-      queued: pendaftaran_aggregate(where: { status: { nama: { _eq: "Assigned Notaris" } } }) {
+      queued: pendaftaran_aggregate(where: { status: { nama: { _eq: "Assigned" } } }) {
         aggregate { count }
       }
       submitting: pendaftaran_aggregate(where: { status: { nama: { _eq: "Submitting" } } }) {

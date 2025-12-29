@@ -20,6 +20,8 @@ export function useUploadedRecords() {
       const result = await urqlClient.query(GetUploadedRecords, {
         where: { batch_id: { _eq: batch_id } },
         order_by: { created_date: 'desc' },
+      }, {
+        requestPolicy: 'network-only',
       }).toPromise()
       if (result.data?.dmaas?.legalisasi) {
         setUploadedRecords(result.data.dmaas.legalisasi)
@@ -70,8 +72,8 @@ export function useUploadedRecords() {
           _created_by: CREATED_BY_ID,
           _assignments: assignments.map(a => ({
             notaris_id: a.notaryId,
-            start_number: a.startAktaNo,
-            end_number: a.startAktaNo + a.quantity - 1,
+            no_akta: a.startAktaNo,
+            quantity: a.quantity,
           })),
         },
       }).toPromise()
@@ -79,8 +81,9 @@ export function useUploadedRecords() {
       if (result.error) {
         throw new Error(result.error.message)
       }
+      const assignedCount = assignments.reduce((sum, a) => sum + a.quantity, 0)
 
-      alert(`Successfully assigned ${assignments.length} records to notaries!`)
+      alert(`Successfully assigned ${assignedCount} records to notaries!`)
       
       // Refresh records
       await fetchRecords(batch_id)

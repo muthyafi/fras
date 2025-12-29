@@ -54,9 +54,9 @@ export const AssignNotaryMutation = `
 `;
 
 export const BulkAssignNotaryMutation = `
-  query assign_notaris_json_hs($args: dmaas_assign_notaris_json_hs_args!) {
+  query AssignNotaries($args: dmaas_assign_notaris_json_base_quantity_args!) {
     dmaas {
-      assign_notaris_json_hs(args: $args) {
+      assign_notaris_json_base_quantity(args: $args) {
         results
       }
     }
@@ -83,7 +83,7 @@ export const GetBatchStats = `
         }
       }
       assigned: legalisasi_aggregate(
-        where: { batch_id: { _eq: $batch_id }, status: { nama: { _eq: "Assigned Notaris" } } }
+        where: { batch_id: { _eq: $batch_id }, status: { nama: { _eq: "Assigned" } } }
       ) {
         aggregate {
           count

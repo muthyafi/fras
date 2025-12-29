@@ -301,7 +301,7 @@ export default function RegistrationTracking() {
                         )}`}
                       >
                         {getStatusIcon(record.status?.nama || 'Unknown')}
-                        {record.status?.nama === 'Active' ? 'Unassigned' : record.status?.nama || 'Unknown'}
+                        {record.status?.nama || 'Unknown'}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">

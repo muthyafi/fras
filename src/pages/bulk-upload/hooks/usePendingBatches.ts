@@ -20,7 +20,7 @@ export function usePendingBatches() {
     try {
       // First, get all unique batch_ids
       const batchesResult = await urqlClient.query(GetPendingBatches, {}, {
-        requestPolicy: refetch ? 'network-only' : 'cache-first',
+        requestPolicy: refetch ? 'network-only' : 'cache-and-network',
       }).toPromise()
       
       if (batchesResult.data?.dmaas?.legalisasi) {
