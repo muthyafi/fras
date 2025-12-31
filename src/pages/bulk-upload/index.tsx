@@ -79,7 +79,7 @@ export default function BulkUpload() {
 
       // Refresh pending batches and switch to review tab
       await fetchBatches()
-      setActiveTab('review')
+      setActiveTab('pending')
     } catch (error) {
       console.error('Upload error:', error)
       alert(`Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`)

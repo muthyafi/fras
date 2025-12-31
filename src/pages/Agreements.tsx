@@ -4,8 +4,15 @@ import {
   FileText, Plus, Search, Filter, Eye, Edit, Trash2, CheckCircle, XCircle, Clock,
   Download, Building2, TrendingUp, AlertCircle, ExternalLink, X
 } from 'lucide-react'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import 'dayjs/locale/id'
 import type { FidusiaAgreement } from '../types'
 import { useRole, usePermissions, useAllowedBranches } from '../contexts/RoleContext'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 // Mock data - in production, this would come from Supabase
 const mockAgreements: FidusiaAgreement[] = [
@@ -288,11 +295,7 @@ export default function Agreements() {
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '-'
-    return new Date(dateString).toLocaleDateString('id-ID', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
+    return dayjs.utc(dateString).tz(dayjs.tz.guess()).locale('id').format('DD MMM YYYY')
   }
 
   // CRUD Operations

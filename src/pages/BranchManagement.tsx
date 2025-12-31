@@ -16,7 +16,13 @@ import {
   CheckCircle,
   XCircle
 } from 'lucide-react'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 import { usePermissions } from '../contexts/RoleContext'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 interface Branch {
   id: string
@@ -685,11 +691,7 @@ export default function BranchManagement() {
                     <div>
                       <p className="text-sm text-gray-600">Established</p>
                       <p className="font-medium text-gray-900">
-                        {new Date(selectedBranch.establishedDate).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
+                        {dayjs.utc(selectedBranch.establishedDate).tz(dayjs.tz.guess()).format('MMMM DD, YYYY')}
                       </p>
                     </div>
                   </div>

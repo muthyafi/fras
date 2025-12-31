@@ -14,5 +14,5 @@ export const urqlClient = new Client({
   },
   // Disable automatic persisted queries (Hasura doesn't support them by default)
   preferGetMethod: false,
-  requestPolicy: 'cache-and-network',
+  // requestPolicy: 'cache-and-network',
 })

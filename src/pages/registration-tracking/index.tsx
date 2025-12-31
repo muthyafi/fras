@@ -12,7 +12,14 @@ import {
   CreditCard,
   AlertTriangle
 } from 'lucide-react'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import 'dayjs/locale/id'
 import { usePollingTracking } from './hooks/usePollingTracking'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 type StatusFilter = '' | 'Unassigned' | 'Assigned Notaris' | 'Submitting' | 'Submitted' | 'Waiting Payment' | 'Processing' | 'Completed' | 'Failed'
 
@@ -77,13 +84,7 @@ export default function RegistrationTracking() {
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '-'
-    return new Date(dateStr).toLocaleString('id-ID', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
+    return dayjs.utc(dateStr).tz(dayjs.tz.guess()).locale('id').format('DD MMM YYYY, HH:mm')
   }
 
   return (

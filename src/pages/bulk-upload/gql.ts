@@ -20,6 +20,7 @@ export const GetUploadedRecords = `
         type
         nilai_penjaminan
         tgl_awal_perjanjian
+        notes
         status {
           id
           nama
@@ -88,6 +89,32 @@ export const GetBatchStats = `
         aggregate {
           count
         }
+      }
+      failed: legalisasi_aggregate(
+        where: { batch_id: { _eq: $batch_id }, status: { nama: { _eq: "Failed" } } }
+      ) {
+        aggregate {
+          count
+        }
+      }
+    }
+  }
+`;
+
+export const GetFailedRecords = `
+  query GetFailedRecords($batch_id: uuid!) {
+    dmaas {
+      legalisasi(where: { batch_id: { _eq: $batch_id }, status: { nama: { _eq: "Failed" } } }) {
+        id
+        batch_id
+        nomor_kontrak
+        nama_debitur
+        merk
+        type
+        nilai_penjaminan
+        tgl_awal_perjanjian
+        notes
+        created_date
       }
     }
   }

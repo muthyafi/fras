@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import { Building2, Plus, Search, Eye, Edit, Trash2, CheckCircle, XCircle } from 'lucide-react'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import 'dayjs/locale/id'
 import type { Institution } from '../types'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 // Mock data
 const mockInstitutions: Institution[] = [
@@ -63,11 +70,7 @@ export default function Institutions() {
   })
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('id-ID', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
+    return dayjs.utc(dateString).tz(dayjs.tz.guess()).locale('id').format('DD MMMM YYYY')
   }
 
   const activeCount = institutions.filter((i) => i.isActive).length
@@ -131,7 +134,7 @@ export default function Institutions() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none bg-white min-w-[150px]"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none bg-white min-w-37.5"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>

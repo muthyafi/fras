@@ -9,6 +9,7 @@ interface Batch {
   total_records: number
   unassigned_records: number
   assigned_records: number
+  failed_records: number
 }
 
 export function usePendingBatches() {
@@ -20,7 +21,7 @@ export function usePendingBatches() {
     try {
       // First, get all unique batch_ids
       const batchesResult = await urqlClient.query(GetPendingBatches, {}, {
-        requestPolicy: refetch ? 'network-only' : 'cache-and-network',
+        requestPolicy: refetch ? 'network-only' : 'cache-first',
       }).toPromise()
       
       if (batchesResult.data?.dmaas?.legalisasi) {
@@ -31,10 +32,13 @@ export function usePendingBatches() {
           batchList.map(async (batch: any) => {
             const statsResult = await urqlClient.query(GetBatchStats, {
               batch_id: batch.batch_id,
+            }, {
+              requestPolicy: refetch ? 'network-only' : 'cache-first',
             }).toPromise()
 
             const total = statsResult.data?.dmaas?.total?.aggregate?.count || 0
             const assigned = statsResult.data?.dmaas?.assigned?.aggregate?.count || 0
+            const failed = statsResult.data?.dmaas?.failed?.aggregate?.count || 0
 
             return {
               batch_id: batch.batch_id,
@@ -42,14 +46,15 @@ export function usePendingBatches() {
               created_date: batch.created_date,
               total_records: total,
               assigned_records: assigned,
-              unassigned_records: total - assigned,
+              failed_records: failed,
+              unassigned_records: total - assigned - failed,
             }
           })
         )
 
-        // Filter to only show batches with unassigned records and sort by date
+        // Filter to show batches with unassigned or failed records and sort by date
         const pendingBatches = batchesWithStats
-          .filter(batch => batch.unassigned_records > 0)
+          .filter(batch => batch.unassigned_records > 0 || batch.failed_records > 0)
           .sort((a, b) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime())
 
         setBatches(pendingBatches)

@@ -12,10 +12,16 @@ import {
   Eye,
   EyeOff,
 } from 'lucide-react'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 import { useRole, type RoleUser, type UserRole, type CustomRole } from '../../contexts/RoleContext'
 import { useQuery } from 'urql'
 import { GetUsersQuery } from './gql'
 import UsersTable from './components/UsersTable'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 // Extended user interface with password
 interface UserWithPassword extends RoleUser {
@@ -381,11 +387,7 @@ export default function UserManagement() {
                     <td className="px-6 py-4">
                       <p className="text-sm text-gray-900">
                         {user.lastLogin
-                          ? new Date(user.lastLogin).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric',
-                            })
+                          ? dayjs.utc(user.lastLogin).tz(dayjs.tz.guess()).format('MMM DD, YYYY')
                           : 'Never'}
                       </p>
                     </td>
@@ -602,24 +604,14 @@ function UserDetailModal({ user, getRoleInfo, onClose }: UserDetailModalProps) {
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Created</span>
                 <span className="text-sm font-medium text-gray-900">
-                  {new Date(user.createdAt).toLocaleDateString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
+                  {dayjs.utc(user.createdAt).tz(dayjs.tz.guess()).format('MMMM DD, YYYY')}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Last Login</span>
                 <span className="text-sm font-medium text-gray-900">
                   {user.lastLogin
-                    ? new Date(user.lastLogin).toLocaleDateString('en-US', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })
+                    ? dayjs.utc(user.lastLogin).tz(dayjs.tz.guess()).format('MMMM DD, YYYY, HH:mm')
                     : 'Never'}
                 </span>
               </div>
