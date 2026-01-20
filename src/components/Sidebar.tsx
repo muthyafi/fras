@@ -44,7 +44,7 @@ export default function Sidebar() {
                 <span className="text-white font-bold text-lg">A</span>
               </div>
               <div>
-                <span className="font-bold text-lg block">PT Adira Finance</span>
+                <span className="font-bold text-lg block">Multi Finance</span>
                 <span className="text-xs text-gray-400">DMaaS System</span>
               </div>
             </div>

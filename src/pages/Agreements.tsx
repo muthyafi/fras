@@ -1098,7 +1098,7 @@ function AgreementFormModal({
 }) {
   const [formData, setFormData] = useState<Partial<FidusiaAgreement>>(initialData || {
     clientName: '',
-    institutionName: 'PT Adira Finance',
+    institutionName: 'Multi Finance',
     branchName: 'Jakarta Sudirman',
     branchCode: 'JKT-01',
     assetDescription: '',

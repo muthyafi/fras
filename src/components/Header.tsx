@@ -21,7 +21,7 @@ export default function Header() {
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-4 flex-1">
           <h2 className="text-2xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            PT Adira Finance
+            Multi Finance
           </h2>
           <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-blue-50 rounded-lg border border-blue-200">
             <Building2 className="w-4 h-4 text-blue-600" />

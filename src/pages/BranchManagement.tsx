@@ -54,9 +54,9 @@ const mockBranches: Branch[] = [
     region: 'Jakarta & Banten',
     address: 'Jl. Jend. Sudirman Kav. 52-53, Jakarta Selatan',
     phone: '021-5290-5555',
-    email: 'jakarta.sudirman@adira.co.id',
+    email: 'jakarta.sudirman@multifinance.co.id',
     managerName: 'Budi Santoso',
-    managerEmail: 'budi.santoso@adira.co.id',
+    managerEmail: 'budi.santoso@multifinance.co.id',
     totalAgreements: 145,
     activeAgreements: 89,
     monthlyGrowth: 12,
@@ -73,9 +73,9 @@ const mockBranches: Branch[] = [
     region: 'Jawa Barat',
     address: 'Jl. Ir. H. Juanda No. 123, Bandung',
     phone: '022-250-4321',
-    email: 'bandung.dago@adira.co.id',
+    email: 'bandung.dago@multifinance.co.id',
     managerName: 'Siti Nurhaliza',
-    managerEmail: 'siti.nurhaliza@adira.co.id',
+    managerEmail: 'siti.nurhaliza@multifinance.co.id',
     totalAgreements: 128,
     activeAgreements: 76,
     monthlyGrowth: 8,
@@ -92,9 +92,9 @@ const mockBranches: Branch[] = [
     region: 'Jawa Timur',
     address: 'Jl. Tunjungan No. 88, Surabaya',
     phone: '031-532-8888',
-    email: 'surabaya.tunjungan@adira.co.id',
+    email: 'surabaya.tunjungan@multifinance.co.id',
     managerName: 'Andi Wijaya',
-    managerEmail: 'andi.wijaya@adira.co.id',
+    managerEmail: 'andi.wijaya@multifinance.co.id',
     totalAgreements: 112,
     activeAgreements: 68,
     monthlyGrowth: -2,
@@ -111,9 +111,9 @@ const mockBranches: Branch[] = [
     region: 'Jakarta & Banten',
     address: 'Jl. M.H. Thamrin No. 11, Jakarta Pusat',
     phone: '021-3192-4567',
-    email: 'jakarta.thamrin@adira.co.id',
+    email: 'jakarta.thamrin@multifinance.co.id',
     managerName: 'Dewi Lestari',
-    managerEmail: 'dewi.lestari@adira.co.id',
+    managerEmail: 'dewi.lestari@multifinance.co.id',
     totalAgreements: 98,
     activeAgreements: 54,
     monthlyGrowth: 5,
@@ -130,9 +130,9 @@ const mockBranches: Branch[] = [
     region: 'Sumatera',
     address: 'Jl. Gatot Subroto No. 234, Medan',
     phone: '061-456-7890',
-    email: 'medan.gatot@adira.co.id',
+    email: 'medan.gatot@multifinance.co.id',
     managerName: 'Rahman Hakim',
-    managerEmail: 'rahman.hakim@adira.co.id',
+    managerEmail: 'rahman.hakim@multifinance.co.id',
     totalAgreements: 87,
     activeAgreements: 45,
     monthlyGrowth: 15,
@@ -149,9 +149,9 @@ const mockBranches: Branch[] = [
     region: 'Bali & Nusa Tenggara',
     address: 'Jl. Sunset Road No. 777, Denpasar',
     phone: '0361-234-567',
-    email: 'denpasar.sunset@adira.co.id',
+    email: 'denpasar.sunset@multifinance.co.id',
     managerName: 'Made Suryawan',
-    managerEmail: 'made.suryawan@adira.co.id',
+    managerEmail: 'made.suryawan@multifinance.co.id',
     totalAgreements: 64,
     activeAgreements: 38,
     monthlyGrowth: 10,
@@ -168,9 +168,9 @@ const mockBranches: Branch[] = [
     region: 'Jawa Tengah & DIY',
     address: 'Jl. Malioboro No. 56, Yogyakarta',
     phone: '0274-567-890',
-    email: 'yogyakarta.malioboro@adira.co.id',
+    email: 'yogyakarta.malioboro@multifinance.co.id',
     managerName: 'Sri Wahyuni',
-    managerEmail: 'sri.wahyuni@adira.co.id',
+    managerEmail: 'sri.wahyuni@multifinance.co.id',
     totalAgreements: 52,
     activeAgreements: 31,
     monthlyGrowth: 3,
@@ -187,9 +187,9 @@ const mockBranches: Branch[] = [
     region: 'Sumatera',
     address: 'Jl. Jend. Sudirman No. 123, Palembang',
     phone: '0711-345-678',
-    email: 'palembang.sudirman@adira.co.id',
+    email: 'palembang.sudirman@multifinance.co.id',
     managerName: 'Ahmad Fauzi',
-    managerEmail: 'ahmad.fauzi@adira.co.id',
+    managerEmail: 'ahmad.fauzi@multifinance.co.id',
     totalAgreements: 45,
     activeAgreements: 28,
     monthlyGrowth: 7,
@@ -286,7 +286,7 @@ export default function BranchManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Branch Management</h1>
-          <p className="text-gray-600 mt-1">Manage all PT Adira Finance branch offices</p>
+          <p className="text-gray-600 mt-1">Manage all Multi Finance branch offices</p>
         </div>
         {permissions.canManageBranches && (
           <button 
@@ -976,7 +976,7 @@ function BranchFormModal({ mode, branch, onClose, onSave }: BranchFormModalProps
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="branch@adira.co.id"
+                  placeholder="branch@multifinance.co.id"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                 />
               </div>

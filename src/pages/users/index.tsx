@@ -34,7 +34,7 @@ interface UserWithPassword extends RoleUser {
 const mockUsersData: UserWithPassword[] = [
   {
     id: '1',
-    email: 'admin@adira.co.id',
+    email: 'admin@multifinance.co.id',
     name: 'Super Admin',
     role: 'super_admin',
     isActive: true,
@@ -44,7 +44,7 @@ const mockUsersData: UserWithPassword[] = [
   },
   {
     id: '2',
-    email: 'admin.jakarta@adira.co.id',
+    email: 'admin.jakarta@multifinance.co.id',
     name: 'Jakarta Admin',
     role: 'branch_admin',
     branchCode: 'JKT-01',
@@ -56,7 +56,7 @@ const mockUsersData: UserWithPassword[] = [
   },
   {
     id: '3',
-    email: 'user.bandung@adira.co.id',
+    email: 'user.bandung@multifinance.co.id',
     name: 'Bandung User',
     role: 'branch_user',
     branchCode: 'BDG-01',
@@ -68,7 +68,7 @@ const mockUsersData: UserWithPassword[] = [
   },
   {
     id: '4',
-    email: 'admin.surabaya@adira.co.id',
+    email: 'admin.surabaya@multifinance.co.id',
     name: 'Surabaya Admin',
     role: 'branch_admin',
     branchCode: 'SBY-01',
@@ -80,7 +80,7 @@ const mockUsersData: UserWithPassword[] = [
   },
   {
     id: '5',
-    email: 'user.medan@adira.co.id',
+    email: 'user.medan@multifinance.co.id',
     name: 'Medan User',
     role: 'branch_user',
     branchCode: 'MDN-01',
@@ -92,7 +92,7 @@ const mockUsersData: UserWithPassword[] = [
   },
   {
     id: '6',
-    email: 'admin.bandung@adira.co.id',
+    email: 'admin.bandung@multifinance.co.id',
     name: 'Bandung Admin',
     role: 'branch_admin',
     branchCode: 'BDG-01',
@@ -848,7 +848,7 @@ function UserFormModal({ mode, user, onClose, onSave, existingUsers, allRoles, g
                   className={`w-full px-3 py-2 border ${
                     errors.email ? 'border-red-300' : 'border-gray-300'
                   } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none`}
-                  placeholder="user@adira.co.id"
+                  placeholder="user@multifinance.co.id"
                 />
                 {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
               </div>
