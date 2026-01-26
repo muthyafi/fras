@@ -39,6 +39,10 @@ export const GetRegistrationTrackingData = `
         notaris {
           id
           nama
+          report_id
+          report {
+            template_id
+          }
         }
         no_akta
         tgl_akta
@@ -95,6 +99,16 @@ export const GetStatusCounts = `
       }
       failed: pendaftaran_aggregate(where: { status: { nama: { _eq: "Failed" } } }) {
         aggregate { count }
+      }
+    }
+  }
+`;
+
+export const GetDataForAktaDownload = `
+  query GetDataForAktaDownload($args: dmaas_create_json_minuta_args!) {
+    dmaas {
+      create_json_minuta(args: $args) {
+        results
       }
     }
   }

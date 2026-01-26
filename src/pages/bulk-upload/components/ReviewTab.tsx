@@ -215,6 +215,12 @@ export default function ReviewTab({
                     {totalAssigned} / {unassignedRecords.length}
                   </span>
                 </div>
+                <div className='text-sm'>
+                  <span className="text-gray-600">Remaining: </span>
+                  <span className="font-semibold text-blue-900">
+                    {unassignedRecords.length - totalAssigned}
+                  </span>
+                </div>
                 <button
                   onClick={handleBulkAssign}
                   disabled={assigning || totalAssigned === 0}

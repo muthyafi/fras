@@ -10,24 +10,28 @@ import {
   Loader,
   FileText,
   CreditCard,
-  AlertTriangle
+  AlertTriangle,
+  Download
 } from 'lucide-react'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import 'dayjs/locale/id'
 import { usePollingTracking } from './hooks/usePollingTracking'
+import { urqlClient } from '../../lib/urql'
+import { GetDataForAktaDownload } from './gql'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-type StatusFilter = '' | 'Unassigned' | 'Assigned Notaris' | 'Submitting' | 'Submitted' | 'Waiting Payment' | 'Processing' | 'Completed' | 'Failed'
+type StatusFilter = '' | 'Unassigned' | 'Assigned' | 'Submitting' | 'Submitted' | 'Waiting Payment' | 'Processing' | 'Completed' | 'Failed'
 
 export default function RegistrationTracking() {
   const [page, setPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedRecord, setSelectedRecord] = useState<any>(null)
+  const [downloadingId, setDownloadingId] = useState<string | null>(null)
   const pageSize = 20
 
   const { records, totalCount, loading, statusCounts, refetch } = usePollingTracking({
@@ -40,6 +44,71 @@ export default function RegistrationTracking() {
   })
 
   const totalPages = Math.ceil(totalCount / pageSize)
+
+  // Download Akta Jaminan Fidusia via Carbone
+  const handleDownloadAkta = async (record: any) => {
+    setDownloadingId(record.id)
+    try {
+      // Call Hasura function to get JSON data for akta
+      const result = await urqlClient.query(
+        GetDataForAktaDownload,
+        {
+          args: {
+            pendaftaran_id: record.id
+          }
+        },
+        {
+          requestPolicy: 'network-only'
+        }
+      ).toPromise()
+
+      if (result.error) {
+        throw new Error(result.error.message)
+      }
+
+      const jsonData = result.data?.dmaas?.create_json_minuta[0]?.results
+
+      if (!jsonData) {
+        throw new Error('No data returned from server')
+      }
+
+      // Call Carbone API to generate PDF
+      const carboneResponse = await fetch(`${import.meta.env.VITE_CARBONE_API_URL}/render/${record.notaris.report.template_id}?download=true`, {
+        method: 'POST',
+        headers: new Headers({
+        Authorization: "Bearer " + import.meta.env.VITE_CARBONE_TOKEN,
+        "carbone-version": "5",
+        "content-type": "application/json",
+      }),
+        body: JSON.stringify({
+          data: jsonData
+        }),
+      })
+
+      if (!carboneResponse.ok) {
+        throw new Error('Failed to generate document')
+      }
+
+      // Get the blob from response
+      const blob = await carboneResponse.blob()
+      console.log('Downloaded akta blob:', blob)
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `Akta_Jaminan_Fidusia_${record.no_perjanjian}`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (error) {
+      console.error('Error downloading akta:', error)
+      alert(`Failed to download Akta Jaminan Fidusia: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setDownloadingId(null)
+    }
+  }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -65,7 +134,7 @@ export default function RegistrationTracking() {
       case 'Unassigned':
       case 'Active':
         return 'bg-orange-100 text-orange-800'
-      case 'Assigned Notaris':
+      case 'Assigned':
         return 'bg-gray-100 text-gray-800'
       case 'Completed':
         return 'bg-green-100 text-green-800'
@@ -202,9 +271,8 @@ export default function RegistrationTracking() {
               >
                 <option value="">All Status</option>
                 <option value="Unassigned">Unassigned</option>
-                <option value="Assigned Notaris">Assigned Notaris</option>
+                <option value="Assigned">Assigned</option>
                 <option value="Submitting">Submitting</option>
-                <option value="Submitted">Submitted</option>
                 <option value="Waiting Payment">Waiting Payment</option>
                 {/* <option value="Processing">Processing</option> */}
                 <option value="Completed">Completed</option>
@@ -309,13 +377,30 @@ export default function RegistrationTracking() {
                       {formatDate(record.modified_date)}
                     </td>
                     <td className="px-4 py-3 text-sm whitespace-nowrap">
-                      <button
-                        onClick={() => setSelectedRecord(record)}
-                        className="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
-                      >
-                        <Eye className="w-4 h-4" />
-                        View
-                      </button>
+                      <div className="flex items-center gap-2">
+                        {record.status?.nama === 'Assigned' && (
+                          <button
+                            onClick={() => handleDownloadAkta(record)}
+                            disabled={downloadingId === record.id}
+                            className="text-green-600 hover:text-green-800 font-medium flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Download Akta Jaminan Fidusia"
+                          >
+                            {downloadingId === record.id ? (
+                              <Loader className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Download className="w-4 h-4" />
+                            )}
+                            Akta
+                          </button>
+                        )}
+                        <button
+                          onClick={() => setSelectedRecord(record)}
+                          className="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+                        >
+                          <Eye className="w-4 h-4" />
+                          View
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -466,12 +551,35 @@ export default function RegistrationTracking() {
             </div>
 
             <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4">
-              <button
-                onClick={() => setSelectedRecord(null)}
-                className="w-full px-4 py-2 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300 transition-colors"
-              >
-                Close
-              </button>
+              <div className="flex gap-3">
+                {selectedRecord.status?.nama === 'Assigned' && (
+                  <button
+                    onClick={() => handleDownloadAkta(selectedRecord)}
+                    disabled={downloadingId === selectedRecord.id}
+                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {downloadingId === selectedRecord.id ? (
+                      <>
+                        <Loader className="w-4 h-4 animate-spin" />
+                        Downloading...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-4 h-4" />
+                        Download Akta Jaminan Fidusia
+                      </>
+                    )}
+                  </button>
+                )}
+                <button
+                  onClick={() => setSelectedRecord(null)}
+                  className={`px-4 py-2 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300 transition-colors ${
+                    selectedRecord.status?.nama === 'Assigned' ? 'flex-1' : 'w-full'
+                  }`}
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>
