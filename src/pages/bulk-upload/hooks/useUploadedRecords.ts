@@ -23,8 +23,8 @@ export function useUploadedRecords() {
       }, {
         requestPolicy: 'network-only',
       }).toPromise()
-      if (result.data?.dmaas?.legalisasi) {
-        setUploadedRecords(result.data.dmaas.legalisasi)
+      if (result.data?.dmaas?.pendaftaran) {
+        setUploadedRecords(result.data.dmaas.pendaftaran)
       }
     } catch (error) {
       console.error('Error fetching records:', error)

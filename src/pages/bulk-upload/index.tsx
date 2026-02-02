@@ -24,6 +24,7 @@ export default function BulkUpload() {
   const {
     batches,
     loading: batchesLoading,
+    isPolling,
     fetchBatches,
   } = usePendingBatches()
 
@@ -123,6 +124,7 @@ export default function BulkUpload() {
         <PendingBatchesTab
           batches={batches}
           loading={batchesLoading}
+          isPolling={isPolling}
           onRefresh={() => fetchBatches(true)}
           onSelectBatch={handleSelectBatch}
         />

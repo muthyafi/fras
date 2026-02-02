@@ -9,18 +9,23 @@ export const UploadFidusiaData = `
 `;
 
 export const GetUploadedRecords = `
-  query GetUploadedRecords($where: dmaas_legalisasi_bool_exp, $order_by: [dmaas_legalisasi_order_by!], $limit: Int, $offset: Int) {
+  query GetUploadedRecords($where: dmaas_pendaftaran_bool_exp, $order_by: [dmaas_pendaftaran_order_by!], $limit: Int, $offset: Int) {
     dmaas {
-      legalisasi(where: $where, order_by: $order_by, limit: $limit, offset: $offset) {
+      pendaftaran(where: $where, order_by: $order_by, limit: $limit, offset: $offset) {
         id
         batch_id
-        nomor_kontrak
-        nama_debitur
-        merk
-        type
-        nilai_penjaminan
+        no_perjanjian
         tgl_awal_perjanjian
-        notes
+        debitur {
+          nama
+        }
+        obyek {
+          merk
+          tipe
+          no_mesin
+          no_rangka
+        }
+        nilai_penjaminan
         status {
           id
           nama
@@ -46,7 +51,7 @@ export const GetNotaries = `
 export const AssignNotaryMutation = `
   mutation AssignNotary($id: uuid!, $notaris_id: uuid!) {
     dmaas {
-      update_data_fidusia_by_pk(pk_columns: { id: $id }, _set: { notaris_id: $notaris_id }) {
+      update_pendaftaran_by_pk(pk_columns: { id: $id }, _set: { notaris_id: $notaris_id }) {
         id
         notaris_id
       }
@@ -97,6 +102,27 @@ export const GetBatchStats = `
           count
         }
       }
+      processing_check: legalisasi_aggregate(
+        where: { batch_id: { _eq: $batch_id }, fidusia_check_status: { _eq: "processing" } }
+      ) {
+        aggregate {
+          count
+        }
+      }
+      completed_check: legalisasi_aggregate(
+        where: { batch_id: { _eq: $batch_id }, fidusia_check_status: { _eq: "completed" } }
+      ) {
+        aggregate {
+          count
+        }
+      }
+      failed_check: legalisasi_aggregate(
+        where: { batch_id: { _eq: $batch_id }, fidusia_check_status: { _eq: "failed" } }
+      ) {
+        aggregate {
+          count
+        }
+      }
     }
   }
 `;
@@ -114,7 +140,27 @@ export const GetFailedRecords = `
         nilai_penjaminan
         tgl_awal_perjanjian
         notes
+        fidusia_check_status
         created_date
+      }
+    }
+  }
+`;
+
+export const RETRY_FAILED_CHECKS = `
+  mutation RetryFailedChecks($batch_id: uuid!) {
+    retryFailedFidusiaChecks(batch_id: $batch_id) {
+      batch_id
+      message
+      retried_count
+      task_ids
+      total_failed
+      debug_info {
+        legalisasi_id
+        nomor_rangka
+        obyek_id
+        pendaftaran_id
+        steps
       }
     }
   }

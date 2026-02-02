@@ -1,10 +1,10 @@
-import { Clock, FileText, Users, Calendar, ChevronRight, Download, XCircle, AlertCircle, Search, ChevronLeft } from 'lucide-react'
+import { Clock, FileText, Users, Calendar, ChevronRight, Download, XCircle, AlertCircle, Search, ChevronLeft, CheckCircle, RefreshCw } from 'lucide-react'
 import dayjs from 'dayjs'
 import 'dayjs/locale/id'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { urqlClient } from '../../../lib/urql'
-import { GetFailedRecords } from '../gql'
+import { GetFailedRecords, RETRY_FAILED_CHECKS } from '../gql'
 import { exportFailedRecordsToExcel } from '../utils'
 import { useState, useMemo } from 'react'
 
@@ -19,11 +19,15 @@ interface Batch {
   unassigned_records: number
   assigned_records: number
   failed_records: number
+  processing_check: number
+  completed_check: number
+  failed_check: number
 }
 
 interface PendingBatchesTabProps {
   batches: Batch[]
   loading: boolean
+  isPolling?: boolean
   onRefresh: () => void
   onSelectBatch: (batchId: string) => void
 }
@@ -31,10 +35,12 @@ interface PendingBatchesTabProps {
 export default function PendingBatchesTab({
   batches,
   loading,
+  isPolling = false,
   onRefresh,
   onSelectBatch,
 }: PendingBatchesTabProps) {
   const [downloadingBatchId, setDownloadingBatchId] = useState<string | null>(null)
+  const [retryingBatchId, setRetryingBatchId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
@@ -102,6 +108,37 @@ export default function PendingBatchesTab({
     }
   }
 
+  const retryFailedChecks = async (batchId: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    
+    if (!confirm('Retry fidusia checks for all failed records in this batch?')) {
+      return
+    }
+    
+    setRetryingBatchId(batchId)
+    
+    try {
+      const result = await urqlClient.mutation(RETRY_FAILED_CHECKS, { batch_id: batchId }).toPromise()
+      
+      if (result.error) {
+        throw new Error(result.error.message)
+      }
+      
+      const retriedCount = result.data?.retryFailedFidusiaChecks?.retried_count || 0
+      const message = result.data?.retryFailedFidusiaChecks?.message || 'Retry initiated'
+      
+      alert(`${message}. ${retriedCount} record(s) queued for retry.`)
+      
+      // Refresh the batches to show updated processing status
+      onRefresh()
+    } catch (error) {
+      console.error('Error retrying failed checks:', error)
+      alert(`Failed to retry checks: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setRetryingBatchId(null)
+    }
+  }
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
       <div className="flex items-center justify-between mb-6">
@@ -110,6 +147,12 @@ export default function PendingBatchesTab({
           <p className="text-sm text-gray-600">
             View and manage batches with unassigned or failed records
           </p>
+          {isPolling && (
+            <p className="text-sm text-blue-600 mt-1 flex items-center gap-1">
+              <Clock className="w-3 h-3 animate-spin" />
+              Auto-refreshing while checks are processing...
+            </p>
+          )}
         </div>
         <button
           onClick={onRefresh}
@@ -180,7 +223,8 @@ export default function PendingBatchesTab({
               (batch.assigned_records / batch.total_records) * 100
             )
             const hasUnassigned = batch.unassigned_records > 0
-            const isClickable = hasUnassigned
+            const isProcessingCheck = batch.processing_check > 0
+            const isClickable = hasUnassigned && !isProcessingCheck
 
             return (
               <div
@@ -200,6 +244,12 @@ export default function PendingBatchesTab({
                         Batch {dayjs.utc(batch.created_date).tz(dayjs.tz.guess()).locale('id').format('DD MMM YYYY')}
                       </h4>
                       <div className="flex items-center gap-2">
+                        {isProcessingCheck && (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 border border-blue-200 rounded-md">
+                            <Clock className="w-3 h-3 animate-spin" />
+                            Checking Records
+                          </span>
+                        )}
                         {batch.unassigned_records > 0 && (
                           <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 border border-yellow-200 rounded-md">
                             <AlertCircle className="w-3 h-3" />
@@ -215,7 +265,7 @@ export default function PendingBatchesTab({
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-3">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
                       <div className="flex items-center gap-2 text-sm">
                         <Calendar className="w-4 h-4 text-gray-400" />
                         <span className="text-gray-600">
@@ -240,6 +290,28 @@ export default function PendingBatchesTab({
                           Unassigned: {batch.unassigned_records}
                         </span>
                       </div>
+                    </div>
+
+                    {/* Fidusia Check Status */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3 pb-3 border-b border-gray-100">
+                      <div className="flex items-center gap-2 text-sm">
+                        <CheckCircle className="w-4 h-4 text-green-500" />
+                        <span className="text-gray-600">
+                          Check Completed: {batch.completed_check}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Clock className="w-4 h-4 text-blue-500" />
+                        <span className="text-gray-600">
+                          Check Processing: {batch.processing_check}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <XCircle className="w-4 h-4 text-red-500" />
+                        <span className="text-gray-600">
+                          Check Failed: {batch.failed_check}
+                        </span>
+                      </div>
                       <div className="flex items-center gap-2 text-sm">
                         <XCircle className="w-4 h-4 text-red-500" />
                         <span className="text-gray-600">
@@ -261,25 +333,50 @@ export default function PendingBatchesTab({
                       </span>
                     </div>
 
-                    {/* Download Failed Records Button */}
+                    {/* Action Buttons for Failed Records */}
                     {batch.failed_records > 0 && (
-                      <button
-                        onClick={(e) => downloadFailedRecords(batch.batch_id, e)}
-                        disabled={downloadingBatchId === batch.batch_id}
-                        className="flex items-center gap-2 px-3 py-1.5 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 disabled:opacity-50 transition-colors"
-                      >
-                        {downloadingBatchId === batch.batch_id ? (
-                          <>
-                            <Clock className="w-4 h-4 animate-spin" />
-                            Downloading...
-                          </>
-                        ) : (
-                          <>
-                            <Download className="w-4 h-4" />
-                            Download {batch.failed_records} Failed Record{batch.failed_records > 1 ? 's' : ''}
-                          </>
-                        )}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={(e) => downloadFailedRecords(batch.batch_id, e)}
+                          disabled={downloadingBatchId === batch.batch_id}
+                          className="flex items-center gap-2 px-3 py-1.5 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 disabled:opacity-50 transition-colors"
+                        >
+                          {downloadingBatchId === batch.batch_id ? (
+                            <>
+                              <Clock className="w-4 h-4 animate-spin" />
+                              Downloading...
+                            </>
+                          ) : (
+                            <>
+                              <Download className="w-4 h-4" />
+                              Download {batch.failed_records} Failed Record{batch.failed_records > 1 ? 's' : ''}
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Retry Failed Checks Button */}
+                    {batch.failed_check > 0 && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <button
+                          onClick={(e) => retryFailedChecks(batch.batch_id, e)}
+                          disabled={retryingBatchId === batch.batch_id}
+                          className="flex items-center gap-2 px-3 py-1.5 text-sm text-orange-600 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 disabled:opacity-50 transition-colors"
+                        >
+                          {retryingBatchId === batch.batch_id ? (
+                            <>
+                              <Clock className="w-4 h-4 animate-spin" />
+                              Retrying...
+                            </>
+                          ) : (
+                            <>
+                              <RefreshCw className="w-4 h-4" />
+                              Retry {batch.failed_check} Failed Check{batch.failed_check > 1 ? 's' : ''}
+                            </>
+                          )}
+                        </button>
+                      </div>
                     )}
                   </div>
 

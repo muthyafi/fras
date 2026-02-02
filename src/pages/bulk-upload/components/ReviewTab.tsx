@@ -10,17 +10,24 @@ interface Notary {
 
 interface UploadedRecord {
   id: string
-  nomor_kontrak: string
-  nama_debitur: string
-  merk: string
-  type: string
-  nilai_penjaminan: number
+  batch_id: string
+  no_perjanjian: string
   tgl_awal_perjanjian: string
+  debitur: {
+    nama: string
+  }
+  obyek: {
+    merk: string
+    tipe: string
+    no_mesin: string
+    no_rangka: string
+  }
+  nilai_penjaminan: number
   status: {
     id: string
     nama: string
   }
-  created_at: string
+  created_date: string
   notaris_id?: string
   no_akta?: number
 }
@@ -287,7 +294,7 @@ export default function ReviewTab({
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  No. Kontrak
+                  No. Perjanjian
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Nama Debitur
@@ -310,13 +317,13 @@ export default function ReviewTab({
               {uploadedRecords.map((record) => (
                 <tr key={record.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
-                    {record.nomor_kontrak}
+                    {record.no_perjanjian}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
-                    {record.nama_debitur}
+                    {record.debitur.nama}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
-                    {record.merk} {record.type}
+                    {record.obyek.merk} {record.obyek.tipe}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
                     {formatCurrency(record.nilai_penjaminan)}
