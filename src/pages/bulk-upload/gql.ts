@@ -135,12 +135,13 @@ export const GetFailedRecords = `
         batch_id
         nomor_kontrak
         nama_debitur
+        nomor_rangka
+        nomor_mesin
         merk
         type
         nilai_penjaminan
         tgl_awal_perjanjian
         notes
-        fidusia_check_status
         created_date
       }
     }

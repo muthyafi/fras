@@ -20,6 +20,8 @@ export const downloadTemplate = () => {
 interface FailedRecord {
   nomor_kontrak: string
   nama_debitur: string
+  nomor_rangka: string
+  nomor_mesin: string
   merk: string
   type: string
   nilai_penjaminan: number
@@ -34,6 +36,8 @@ export const exportFailedRecordsToExcel = (records: FailedRecord[], batchId: str
     'Nama Debitur': record.nama_debitur || '',
     'Merk': record.merk || '',
     'Type': record.type || '',
+    'Nomor Rangka': record.nomor_rangka || '',
+    'Nomor Mesin': record.nomor_mesin || '',
     'Nilai Penjaminan': record.nilai_penjaminan || 0,
     'Tanggal Awal Perjanjian': record.tgl_awal_perjanjian || '',
     'Error Notes': record.notes || '',
